@@ -1,5 +1,4 @@
 country_name,region_name,latitude,longitude,aggregation,indicator,value
-#country,#adm1+name,#geo+lat,#geo+lon,,#indicator+name,#indicator+num
 Afghanistan,Kabul,34.5665,69.5477,sum,flood,540
 Afghanistan,Kapisa,34.8563,69.6701,sum,flood,73
 Afghanistan,Parwan,34.9132,68.9302,sum,flood,428
