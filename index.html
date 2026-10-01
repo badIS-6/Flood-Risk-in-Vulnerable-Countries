@@ -2,85 +2,59 @@
 <html>
 <head>
     <title>Flood Risk Assessment</title>
-    <!-- Leaflet mapping library and its required stylesheet for tile rendering -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <!-- PapaParse library to parse the CSV -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
 <body>
 
-    <!-- Pure HTML table layout to position the UI on the side without CSS -->
     <table width="100%" border="1" cellpadding="12" cellspacing="0">
         <tr valign="top">
-            <!-- SIDEBAR: User Input Controls & Results (Left Column) -->
             <td width="35%">
-                <h2>Flood Risk Assessment</h2>
+                
+                <div align="left">
+                    <img src="data/logo.jpg" alt="Logo" width="220">
+                </div>
+
+                <h2 align="center">Flood Risk Assessment for Vulnerable Countries</h2>
                 
                 <p>
-                    <b>Email Address (Optional):</b><br>
+                    <b>Email (Optional):</b><br>
                     <input type="email" id="emailInput" size="30" placeholder="user@example.com">
                 </p>
                 
                 <p>
-                    <b>Country:</b><br>
+                    <b>Select Country:</b><br>
                     <select id="countrySelect">
                         <option value="">-- Loading Countries... --</option>
                     </select>
                 </p>
                 
                 <p>
-                    <b>Region:</b><br>
+                    <b>Select Region:</b><br>
                     <select id="regionSelect">
                         <option value="">-- Select Country First --</option>
                     </select>
                 </p>
                 
-                <p>
+                <p align="center">
                     <button type="button" onclick="assessRisk()">Assess Flood Risk</button>
                 </p>
 
                 <hr>
 
-                <!-- Assessment Output Display -->
                 <div id="assessmentResults">
-                    <p><i>Select a country and region, then click the button above.</i></p>
+                    <p align="center"><i>Select a country and region, then click the button above.</i></p>
                 </div>
-
-                <hr>
-
-                <!-- Methodology Details -->
-                <h4>Methodology & Formulas</h4>
-                <p>
-                    <b>1. Normalization (0 to 1):</b><br>
-                    Every variable is scaled across the global dataset extremes:<br>
-                    <i>N = (Raw - Min) / (Max - Min)</i>
-                </p>
-                <p>
-                    <b>2. Directional Risk:</b><br>
-                    &bull; <i>Direct scaling</i>: Historical Flood Value (35%), Rainfall (25%), Temperature (5%). Higher raw values yield higher risk.<br>
-                    &bull; <i>Inverse scaling (1 - N)</i>: Elevation (15%), Slope (10%), NDVI (10%). Low elevation basins, flat slopes, and low vegetation accelerate pooling and runoff.
-                </p>
-                <p>
-                    <b>3. Score Formula (0 to 100):</b><br>
-                    <i>Score = [ (0.35 &times; N_val) + (0.25 &times; N_rain) + (0.15 &times; (1 - N_elev)) + (0.10 &times; (1 - N_slope)) + (0.10 &times; (1 - N_ndvi)) + (0.05 &times; N_temp) ] &times; 100</i>
-                </p>
-                <p>
-                    <b>4. Classifications:</b><br>
-                    Very Low (0–20) | Low (21–40) | Moderate (41–60) | High (61–80) | Very High (81–100)
-                </p>
             </td>
 
-            <!-- MAP DISPLAY (Right Column) -->
             <td width="65%">
-                <!-- Leaflet requires a container height in pixels to render tiles -->
-                <div id="map" style="height: 650px;"></div>
+                <div id="map" style="height: 800px;"></div>
             </td>
         </tr>
     </table>
 
     <script>
-        // 1. Initialize Map
         let map = L.map('map').setView([20, 0], 2);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
@@ -89,7 +63,6 @@
         let currentMarker = null;
         let floodData = [];
 
-        // Global Min/Max trackers for dataset-wide normalization
         let stats = {
             value: { min: Infinity, max: -Infinity },
             rainfall: { min: Infinity, max: -Infinity },
@@ -99,16 +72,13 @@
             temp: { min: Infinity, max: -Infinity }
         };
 
-        // 2. Load CSV from the specified folder
         Papa.parse("Google_earth_engine/Flood_Enriched_2026.csv", {
             download: true,
             header: true,
             dynamicTyping: true,
             complete: function(results) {
-                // Filter out blank rows
                 floodData = results.data.filter(row => row.country_name && row.region_name);
 
-                // Compute global min and max for all 6 metrics
                 floodData.forEach(row => {
                     if (row.value < stats.value.min) stats.value.min = row.value;
                     if (row.value > stats.value.max) stats.value.max = row.value;
@@ -129,7 +99,6 @@
                     if (row.temperature_2026_c > stats.temp.max) stats.temp.max = row.temperature_2026_c;
                 });
 
-                // Populate Country Dropdown
                 let countrySelect = document.getElementById('countrySelect');
                 countrySelect.innerHTML = '<option value="">-- Select Country --</option>';
 
@@ -143,11 +112,10 @@
             },
             error: function(err) {
                 document.getElementById('assessmentResults').innerHTML = 
-                    "<font color='red'><b>Error:</b> Unable to load CSV from 'Google_earth_engine/Flood_Enriched_2026.csv'. Run via a local web server (e.g. python -m http.server).</font>";
+                    "<font color='red'><b>Error:</b> Unable to load CSV from 'Google_earth_engine/Flood_Enriched_2026.csv'. Run via a local web server.</font>";
             }
         });
 
-        // 3. Update Region Dropdown when Country is Selected
         document.getElementById('countrySelect').addEventListener('change', function(e) {
             let selectedCountry = e.target.value;
             let regionSelect = document.getElementById('regionSelect');
@@ -168,13 +136,19 @@
             }
         });
 
-        // Helper function: min-max normalization clamped to [0, 1]
         function normalize(val, min, max) {
             if (max === min) return 0;
             return Math.max(0, Math.min(1, (val - min) / (max - min)));
         }
 
-        // 4. Calculate Risk and Update Map
+        function getHeatmapColor(riskFactor) {
+            if (riskFactor <= 0.2) return "#28a745"; 
+            if (riskFactor <= 0.4) return "#85c83b"; 
+            if (riskFactor <= 0.6) return "#ffc107"; 
+            if (riskFactor <= 0.8) return "#fd7e14"; 
+            return "#dc3545"; 
+        }
+
         function assessRisk() {
             let email = document.getElementById('emailInput').value;
             let country = document.getElementById('countrySelect').value;
@@ -188,7 +162,6 @@
             let data = floodData.find(row => row.country_name === country && row.region_name === region);
             if (!data) return;
 
-            // Pan and zoom map to the region's point
             let geoData = JSON.parse(data['.geo']);
             let lon = geoData.coordinates[0];
             let lat = geoData.coordinates[1];
@@ -200,60 +173,85 @@
             currentMarker = L.marker([lat, lon]).addTo(map);
             currentMarker.bindPopup("<b>" + region + " (" + country + ")</b>").openPopup();
 
-            // Direct normalization (higher raw = higher risk)
+            
             let nValue = normalize(data.value, stats.value.min, stats.value.max);
             let nRain  = normalize(data.rainfall_2026_mm, stats.rainfall.min, stats.rainfall.max);
             let nTemp  = normalize(data.temperature_2026_c, stats.temp.min, stats.temp.max);
 
-            // Inverse normalization (lower raw = higher risk)
             let nElev  = 1 - normalize(data.elevation_m, stats.elevation.min, stats.elevation.max);
             let nSlope = 1 - normalize(data.slope_deg, stats.slope.min, stats.slope.max);
             let nNDVI  = 1 - normalize(data.ndvi_2026, stats.ndvi.min, stats.ndvi.max);
 
-            // Weight calculation: 35%, 25%, 15%, 10%, 10%, 5%
-            let rawScore = ((nValue * 0.35) +(nRain  * 0.25) +(nElev  * 0.15) +(nSlope * 0.10) +(nNDVI  * 0.10) +(nTemp  * 0.05)) * 100;
+            let rawScore = (
+                (nValue * 0.35) +
+                (nRain  * 0.25) +
+                (nElev  * 0.15) +
+                (nSlope * 0.10) +
+                (nNDVI  * 0.10) +
+                (nTemp  * 0.05)
+            ) * 100;
 
             let score = Math.round(rawScore);
 
-            // Classify 0-100 Score
             let riskLevel = "";
             let riskColor = "";
 
             if (score <= 20) {
                 riskLevel = "Very Low";
-                riskColor = "green";
+                riskColor = "#28a745"; 
             } else if (score <= 40) {
                 riskLevel = "Low";
-                riskColor = "#556B2F";
+                riskColor = "#85c83b"; 
             } else if (score <= 60) {
                 riskLevel = "Moderate";
                 riskColor = "#B8860B";
             } else if (score <= 80) {
                 riskLevel = "High";
-                riskColor = "orangered";
+                riskColor = "#fd7e14"; 
             } else {
                 riskLevel = "Very High";
-                riskColor = "red";
+                riskColor = "#dc3545"; 
             }
 
-            // Optional email notification string
-            let emailText = email ? "<p><i>Summary report destination: " + email + "</i></p>" : "";
+            let emailText = email ? "<p align='center'><i>Summary report destination: " + email + "</i></p>" : "";
 
-            // Render pure HTML results without any CSS classes or style blocks
             document.getElementById('assessmentResults').innerHTML =
-                "<h3>" + region + ", " + country + "</h3>" +
-                "<p>" +
-                    "<b>Flood Risk Score:</b> " + score + " / 100<br>" +
-                    "<b>Classification:</b> <font color='" + riskColor + "'><b>" + riskLevel + "</b></font>" +
-                "</p>" +
-                "<ul>" +
-                    "<li><b>Historical Floods:</b> " + data.value + "</li>" +
-                    "<li><b>2026 Rainfall:</b> " + Math.round(data.rainfall_2026_mm) + " mm</li>" +
-                    "<li><b>Elevation:</b> " + Math.round(data.elevation_m) + " m</li>" +
-                    "<li><b>Slope:</b> " + (Math.round(data.slope_deg * 10) / 10) + "&deg;</li>" +
-                    "<li><b>Vegetation Index (NDVI):</b> " + (Math.round(data.ndvi_2026 * 100) / 100) + "</li>" +
-                    "<li><b>2026 Temperature:</b> " + (Math.round(data.temperature_2026_c * 10) / 10) + " &deg;C</li>" +
-                "</ul>" +
+                "<h3 align='center'>" + region + ", " + country + "</h3>" +
+                
+                "<h1 align='center'><font color='" + riskColor + "'>" + riskLevel + " Risk (" + score + "/100)</font></h1>" +
+                
+                "<table width='100%' border='1' cellpadding='8' cellspacing='0'>" +
+                    "<tr>" +
+                        "<td width='50%'><b>Historical Floods</b></td>" +
+                        "<td width='40%'>" + data.value + "</td>" +
+                        "<td width='10%' bgcolor='" + getHeatmapColor(nValue) + "'>&nbsp;</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td><b>2026 Rainfall</b></td>" +
+                        "<td>" + Math.round(data.rainfall_2026_mm) + " mm</td>" +
+                        "<td bgcolor='" + getHeatmapColor(nRain) + "'>&nbsp;</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td><b>Elevation</b></td>" +
+                        "<td>" + Math.round(data.elevation_m) + " m</td>" +
+                        "<td bgcolor='" + getHeatmapColor(nElev) + "'>&nbsp;</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td><b>Slope</b></td>" +
+                        "<td>" + (Math.round(data.slope_deg * 10) / 10) + "&deg;</td>" +
+                        "<td bgcolor='" + getHeatmapColor(nSlope) + "'>&nbsp;</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td><b>Vegetation Index (NDVI)</b></td>" +
+                        "<td>" + (Math.round(data.ndvi_2026 * 100) / 100) + "</td>" +
+                        "<td bgcolor='" + getHeatmapColor(nNDVI) + "'>&nbsp;</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td><b>2026 Temperature</b></td>" +
+                        "<td>" + (Math.round(data.temperature_2026_c * 10) / 10) + " &deg;C</td>" +
+                        "<td bgcolor='" + getHeatmapColor(nTemp) + "'>&nbsp;</td>" +
+                    "</tr>" +
+                "</table>" +
                 emailText;
         }
     </script>
