@@ -19,6 +19,11 @@
                 <h2 align="center">Flood Risk Assessment for Vulnerable Countries</h2>
                 
                 <p>
+                    <b>Name (Optional):</b><br>
+                    <input type="text" id="nameInput" size="30" placeholder="Jane Doe">
+                </p>
+
+                <p>
                     <b>Email (Optional):</b><br>
                     <input type="email" id="emailInput" size="30" placeholder="user@example.com">
                 </p>
@@ -43,13 +48,23 @@
 
                 <hr>
 
-                <div id="assessmentResults">
-                    <p align="center"><i>Select a country and region, then click the button above.</i></p>
-                </div>
+
+                <hr>
+
+                <h3>About This Project</h3>
+                <p>Global <strong>climate change</strong> has accelerated the frequency and severity of extreme weather events, making traditional disaster response models obsolete. This platform addresses the critical need for climate planning in the more vulnerable regions in the world by:</p>
+                <ol>
+                    <li>Synthesizing historical flood occurrence metrics with 2026 climate and rainfall data.</li>
+                    <li>Normalizing complex topographic variables.</li>
+                    <li>Assessing flood risk, which serves as a warning to locals too.</li>
+                </ol>
+                <p>The platform includes countries that are ravaged by war and hunger, and left open for natural desasters.</p>
+
+
             </td>
 
             <td width="65%">
-                <div id="map" style="height: 800px;"></div>
+                <div id="map" style="height: 850px;"></div>
             </td>
         </tr>
     </table>
@@ -150,6 +165,7 @@
         }
 
         function assessRisk() {
+            let name = document.getElementById('nameInput').value;
             let email = document.getElementById('emailInput').value;
             let country = document.getElementById('countrySelect').value;
             let region = document.getElementById('regionSelect').value;
@@ -173,7 +189,6 @@
             currentMarker = L.marker([lat, lon]).addTo(map);
             currentMarker.bindPopup("<b>" + region + " (" + country + ")</b>").openPopup();
 
-            
             let nValue = normalize(data.value, stats.value.min, stats.value.max);
             let nRain  = normalize(data.rainfall_2026_mm, stats.rainfall.min, stats.rainfall.max);
             let nTemp  = normalize(data.temperature_2026_c, stats.temp.min, stats.temp.max);
@@ -204,7 +219,7 @@
                 riskColor = "#85c83b"; 
             } else if (score <= 60) {
                 riskLevel = "Moderate";
-                riskColor = "#B8860B";
+                riskColor = "#B8860B"; 
             } else if (score <= 80) {
                 riskLevel = "High";
                 riskColor = "#fd7e14"; 
@@ -213,7 +228,14 @@
                 riskColor = "#dc3545"; 
             }
 
-            let emailText = email ? "<p align='center'><i>Summary report destination: " + email + "</i></p>" : "";
+            let dispatchText = "";
+            if (name && email) {
+                dispatchText = "<p align='center'><i>Summary report destination: " + name + " (" + email + ")</i></p>";
+            } else if (name) {
+                dispatchText = "<p align='center'><i>Summary report destination: " + name + "</i></p>";
+            } else if (email) {
+                dispatchText = "<p align='center'><i>Summary report destination: " + email + "</i></p>";
+            }
 
             document.getElementById('assessmentResults').innerHTML =
                 "<h3 align='center'>" + region + ", " + country + "</h3>" +
@@ -252,7 +274,7 @@
                         "<td bgcolor='" + getHeatmapColor(nTemp) + "'>&nbsp;</td>" +
                     "</tr>" +
                 "</table>" +
-                emailText;
+                dispatchText;
         }
     </script>
 </body>
