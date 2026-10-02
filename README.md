@@ -77,7 +77,6 @@ Dataset: USGS/SRTMGL1_003
 Slope = Terrain Slope(Elevation)
 ```
 
----
 
 ## 3.2 GIS Analysis
 ### GEE Layer
@@ -117,7 +116,6 @@ The resulting score is classified into five risk levels:
 81–100   → Very High Risk
 ```
 
----
 
 ### 3.3 Web Page
 Link: https://badis-6.github.io/Flood-Risk-in-Vulnerable-Countries/
@@ -137,8 +135,6 @@ The user selects:
 1. A country
 2. A region
 
-
----
 
 ### 3.4 User Form
 
