@@ -120,6 +120,7 @@ The resulting score is classified into five risk levels:
 ---
 
 ### 3.3 Web Page
+Link: https://badis-6.github.io/Flood-Risk-in-Vulnerable-Countries/
 
 The GIS results are integrated into `index.html`.
 <img width="1841" height="914" alt="image" src="https://github.com/user-attachments/assets/70b5c211-4564-4619-9ee7-547ecf657551" />
