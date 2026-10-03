@@ -41,37 +41,37 @@ Remote Sensing Data → GIS Analysis → Web Page → User Feedback Form
 
 The project combines a **historical flood dataset** with several Earth observation and geospatial datasets processed with Google Earth Engine.
 
-#### Flood dataset
+### Flood dataset
 
 Source: https://data.humdata.org/dataset/
 
-#### CHIRPS — Rainfall
+### CHIRPS — Rainfall
 
-Dataset: **UCSB-CHG/CHIRPS/DAILY*
+Dataset: *UCSB-CHG/CHIRPS/DAILY*
 
-#### Rainfall anomaly
+### Rainfall anomaly
 ```text
 Rainfall Anomaly (%) = ((2026 Rainfall - Historical Rainfall) / Historical Rainfall) × 100
 ```
 
-#### ERA5-Land — Temperature
+### ERA5-Land — Temperature
 
-Dataset: **ECMWF/ERA5_LAND/DAILY_AGGR*
-
-
-#### MODIS — NDVI
-
-Dataset: **MODIS/061/MOD13Q1*
+Dataset: *ECMWF/ERA5_LAND/DAILY_AGGR*
 
 
-#### SRTM — Elevation
+### MODIS — NDVI
 
-Dataset: **USGS/SRTMGL1_003*
+Dataset: *MODIS/061/MOD13Q1*
 
-#### Slope
+
+### SRTM — Elevation
+
+Dataset: *USGS/SRTMGL1_003*
+
+### Slope
 
 ```text
-Slope = Terrain Slope(Elevation)
+Slope = Terrain_Slope(Elevation)
 ```
 
 
