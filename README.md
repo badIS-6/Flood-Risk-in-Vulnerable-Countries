@@ -2,9 +2,9 @@
 
 ## 1. Context
 
-Floods are among the major natural hazards affecting vulnerable and impoverished regions, particularly where intense rainfall, low elevation, topography and previous records increase exposure to flooding.
+**Problem:** Floods are among the major natural hazards affecting **vulnerable and impoverished regions**, particularly where intense rainfall, low elevation, topography and previous records increase exposure to flooding.
 
-This project develops a web-based flood risk assessment tool that combines historical flood records with remote sensing and geospatial data. The objective is to provide municipalities, urban planners, civil protection authorities and citizens with a simple interface for exploring flood-related indicators and obtaining a **regional flood risk assessment**.
+**Solution:** A web-based flood risk assessment map that provides municipalities, urban planners, civil protection authorities and citizens with a simple interface for exploring flood-related indicators and obtaining a regional flood risk assessment.
 
 ---
 
@@ -43,12 +43,11 @@ The project combines a **historical flood dataset** with several Earth observati
 
 #### Flood dataset
 
-A flood occurrence dataset is used to get historical flood data for the selected locations.
 Source: https://data.humdata.org/dataset/
 
 #### CHIRPS — Rainfall
 
-Dataset: UCSB-CHG/CHIRPS/DAILY
+Dataset: **UCSB-CHG/CHIRPS/DAILY*
 
 #### Rainfall anomaly
 ```text
@@ -57,19 +56,17 @@ Rainfall Anomaly (%) = ((2026 Rainfall - Historical Rainfall) / Historical Rainf
 
 #### ERA5-Land — Temperature
 
-Dataset: ECMWF/ERA5_LAND/DAILY_AGGR
+Dataset: **ECMWF/ERA5_LAND/DAILY_AGGR*
 
 
 #### MODIS — NDVI
 
-Dataset: MODIS/061/MOD13Q1
+Dataset: **MODIS/061/MOD13Q1*
 
-MODIS NDVI is used as an indicator of vegetation conditions.
 
 #### SRTM — Elevation
 
-Dataset: USGS/SRTMGL1_003
-
+Dataset: **USGS/SRTMGL1_003*
 
 #### Slope
 
@@ -117,7 +114,7 @@ The resulting score is classified into five risk levels:
 ```
 
 
-### 3.3 Web Page
+## 3.3 Web Page
 Link: https://badis-6.github.io/Flood-Risk-in-Vulnerable-Countries/
 
 The GIS results are integrated into `index.html`.
@@ -127,29 +124,22 @@ The web application uses:
 
 * **Leaflet** for the interactive GIS map
 * **OpenStreetMap** as the base map
-* **PapaParse** to load the Google Earth Engine CSV dataset
-* **HTML, CSS, and JavaScript** for the user interface and risk assessment
+* **HTML** for the user interface and risk assessment
+
+
+
+## 3.4 User Form
 
 The user selects:
-
-1. A country
-2. A region
-
-
-### 3.4 User Form
-
-The web page includes a user interaction form containing:
 
 * Name (optional)
 * Email (optional)
 * Country
 * Region
 
-The user selects a country and then selects a corresponding region.
-
-After selecting the location and clicking **"Assess Flood Risk"**, the application displays the flood risk assessment for that region.
+After selecting the location and clicking `Assess Flood Risk`, the application displays the flood risk assessment for that region.
 
 The form provides an interaction layer between the user and the GIS-based assessment system, allowing users to select a geographic location and receive its corresponding flood risk information.
 
 ---
-
+As part of a school project - Web mapping - Manouba School of Engineering
