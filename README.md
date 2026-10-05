@@ -2,7 +2,7 @@
 
 ## 1. Context
 
-**Problem:** Floods are among the major natural hazards affecting **vulnerable and impoverished regions**, particularly where intense rainfall, low elevation, topography and previous records increase exposure to flooding.
+**Problem:** Floods are among the major natural hazards affecting **vulnerable and impoverished regions**, particularly where intense rainfall, low elevation, topography and previous records increase exposure to flooding..
 
 **Solution:** A web-based flood risk assessment map that provides municipalities, urban planners, civil protection authorities and citizens with a simple interface for exploring flood-related indicators and obtaining a regional flood risk assessment.
 
